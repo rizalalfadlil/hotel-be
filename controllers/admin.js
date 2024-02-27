@@ -10,6 +10,22 @@
           res.status(500).json(error);
         }
       };
+      exports.login = async (req, res) => {
+        try {
+          const { username, password } = req.body; // Get username and password from request body
+          const user = await db.admin.findOne({ where: { nama:username, password } }); // Find user in tb_masyarakat table
+          if (user) {
+            // If user is found
+            res.json({ message: "Login berhasil sebagai user", data: user }); // Send success message and user data
+          }else {
+            // If neither user nor staff is found
+            res.status(401).send("username atau password salah"); // Send error message
+          }
+        } catch (err) {
+          console.error(err);
+          res.status(500).send("Internal server error");
+        }
+      };
 
       exports.getAll = async (req, res) => {
         try {

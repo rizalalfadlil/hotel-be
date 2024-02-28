@@ -13,13 +13,18 @@
       exports.login = async (req, res) => {
         try {
           const { username, password } = req.body; // Get username and password from request body
-          const user = await db.admin.findOne({ where: { nama:username, password } }); // Find user in tb_masyarakat table
+          const user = await db.admin.findOne({ where: { nama:username} }); // Find user 
           if (user) {
             // If user is found
-            res.json({ message: "Login berhasil sebagai user", data: user }); // Send success message and user data
+            if(user.password === password){
+              res.json({ message: "Login berhasil sebagai user", data: user }); // Send success message and user data
+            }else{
+              res.status(401).send("password salah"); // Send error message
+            }
+            
           }else {
             // If neither user nor staff is found
-            res.status(401).send("username atau password salah"); // Send error message
+            res.status(401).send("username tidak ditemukan"); // Send error message
           }
         } catch (err) {
           console.error(err);
